@@ -1,12 +1,14 @@
-# In a real system, this would call the MLB API or a stat provider
-# For now, we return dummy but structured values for each team
+import requests
+import random
 
+# Simulated function to mimic team rolling stats from MLB API
 def get_team_rolling_stats(team_name):
-    dummy_stats = {
-        "hits": 8.2,
-        "era": 3.75,
-        "strikeouts_pitch": 9.1,
-        "strikeouts_bat": 8.4,
-        "innings": 8.0
+    # NOTE: This would normally pull and average the last 3–5 games from an API
+    # For now, return randomized but realistic stat ranges
+    return {
+        "hits": round(random.uniform(6.5, 10.0), 2),
+        "era": round(random.uniform(2.5, 5.0), 2),
+        "strikeouts_pitch": round(random.uniform(7.5, 10.5), 2),
+        "strikeouts_bat": round(random.uniform(6.0, 10.0), 2),
+        "innings": round(random.uniform(7.0, 9.0), 2)
     }
-    return dummy_stats
