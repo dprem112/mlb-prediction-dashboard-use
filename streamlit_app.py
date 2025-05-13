@@ -1,27 +1,29 @@
 import streamlit as st
 import pandas as pd
+from mlb_api import get_today_matchups
+from generate_features import build_features
 from predictor import predict_game
 
-st.set_page_config(page_title="MLB Prediction Dashboard", layout="centered")
+st.set_page_config(page_title="Live MLB Predictions", layout="centered")
 st.title("⚾ MLB Prediction Dashboard")
-st.markdown("Real predictions powered by machine learning.")
 
-# Realistic example features
-games = [
-    {"Matchup": "Yankees vs Red Sox", "features": [3, -1.2, 5, -2, 0.8]},
-    {"Matchup": "Dodgers vs Padres", "features": [1, -0.7, 3, 0, 0.4]},
-    {"Matchup": "Cubs vs Brewers", "features": [-2, 0.5, -1, 2, -0.3]}
-]
+st.markdown("Below are today's MLB matchups and predicted outcomes using our trained model.")
 
-results = []
-for game in games:
-    pred, conf = predict_game(game["features"])
-    results.append({
-        "Matchup": game["Matchup"],
-        "Predicted Winner": "Home" if pred == 1 else "Away",
-        "Confidence": f"{conf:.2%}"
-    })
+games = get_today_matchups()
 
-df = pd.DataFrame(results)
-st.subheader("Today's MLB Predictions")
-st.table(df)
+if not games:
+    st.warning("No games found for today.")
+else:
+    predictions = []
+    for game in games:
+        features = build_features(game)
+        pred, conf = predict_game(features)
+        predictions.append({
+            "Matchup": f"{game['away']} @ {game['home']}",
+            "Predicted Winner": game["home"] if pred == 1 else game["away"],
+            "Confidence": f"{conf:.2%}"
+        })
+
+    df = pd.DataFrame(predictions)
+    st.subheader("Predictions")
+    st.table(df)

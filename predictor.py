@@ -1,6 +1,4 @@
 import joblib
-import numpy as np
-
 model = joblib.load("xgb_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
